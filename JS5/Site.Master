@@ -1,0 +1,82 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="JS5.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="zh">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - 我的 ASP.NET  應用程式</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <style>        
+        body {
+            background: black;
+        }
+        canvas {
+            border: 1px solid white;
+        }        
+    </style>
+    <script>
+        function ShowSnake() {
+            snake.x = snake.x + snake.dx;
+            snake.y = snake.y + snake.dy;
+            if (snake.x >= MyCanvas.width) { snake.x = 0; }
+            if (snake.x < 0) { snake.x = MyCanvas.width - grid; }
+            if (snake.y >= MyCanvas.height) { snake.y = 0; }
+            if (snake.y < 0) { snake.y = MyCanvas.height - grid; }
+            Plate.clearRect(0, 0, MyCanvas.width, MyCanvas.height);
+            Plate.fillStyle = 'green';
+            Plate.fillRect(snake.x, snake.y, grid - 1, grid - 1);
+            Plate.fillStyle = 'red';
+            Plate.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+            Plate.fillStyle = 'orange';
+            Plate.fillRect(orange.x, orange.y, grid + 20, grid + 20);
+            document.addEventListener('keydown', function (e) {
+                if (e.which == 37) { snake.dx = -4; snake.dy = 0; }
+                if (e.which == 38) { snake.dy = -4; snake.dx = 0; }
+                if (e.which == 39) { snake.dx = 4; snake.dy = 0; }
+                if (e.which == 40) { snake.dy = 4; snake.dx = 0; }
+            });
+            distx = Math.abs(snake.x - apple.x);
+            disty = Math.abs(snake.y - apple.y);
+            distx2 = Math.abs(snake.x - orange.x);
+            disty2 = Math.abs(snake.y - orange.y);
+            if ((distx < 12) && (disty < 12)) {
+                alert("吃到蘋果");
+            }
+            else if ((distx2 < 19) && (disty2 < 18)) {
+                alert("吃到橘子");
+            }
+            else {
+                requestAnimationFrame(ShowSnake);
+            }    
+        }
+    </script>
+</head>
+<body>
+    <canvas width="400" height="400"id="X"></canvas>
+    <script>
+        var MyCanvas = document.getElementById('X');
+        var Plate = MyCanvas.getContext('2d');
+        var grid = 16;
+        var apple = { x: 320, y: 320 };
+        var orange = { x: 100, y: 100};
+        var snake = { x: 160, y: 160, dx: 4, dy: 0, };    
+        requestAnimationFrame(ShowSnake);
+    </script>
+    <form runat="server">
+        <asp:ScriptManager runat="server">            
+        </asp:ScriptManager>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+            
+    </form>
+</body>
+</html>
